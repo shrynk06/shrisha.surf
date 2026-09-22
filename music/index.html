@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>music.shrisha.surf</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background: #050505;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    header {
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 35px;
+      border-bottom: 1px solid #1c1c1c;
+    }
+
+    .logo {
+      font-family: monospace;
+      font-size: 18px;
+      letter-spacing: 1px;
+    }
+
+    .home {
+      color: #888;
+      text-decoration: none;
+      font-family: monospace;
+      font-size: 13px;
+    }
+
+    .home:hover {
+      color: #fff;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      min-height: 0;
+    }
+
+    .sidebar {
+      width: 240px;
+      border-right: 1px solid #1c1c1c;
+      padding: 30px 20px;
+    }
+
+    .sidebar h3 {
+      margin: 0 0 25px;
+      font-family: monospace;
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .playlist {
+      color: #aaa;
+      font-size: 14px;
+      padding: 10px 0;
+      cursor: pointer;
+    }
+
+    .playlist:hover {
+      color: #fff;
+    }
+
+    .content {
+      flex: 1;
+      padding: 45px;
+      overflow-y: auto;
+    }
+
+    .heading {
+      margin-bottom: 35px;
+    }
+
+    .heading h1 {
+      margin: 0;
+      font-size: 34px;
+      font-weight: 400;
+    }
+
+    .heading p {
+      margin-top: 10px;
+      color: #666;
+      font-family: monospace;
+      font-size: 13px;
+    }
+
+    .tracks {
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .track {
+      display: grid;
+      grid-template-columns: 45px 1fr 100px;
+      align-items: center;
+      padding: 15px 10px;
+      border-bottom: 1px solid #151515;
+      cursor: pointer;
+    }
+
+    .track:hover {
+      background: #0d0d0d;
+    }
+
+    .track-number {
+      color: #555;
+      font-family: monospace;
+    }
+
+    .track-name {
+      font-size: 14px;
+    }
+
+    .track-artist {
+      color: #666;
+      font-size: 12px;
+      margin-top: 4px;
+    }
+
+    .track-time {
+      color: #555;
+      font-family: monospace;
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .player {
+      height: 100px;
+      border-top: 1px solid #1c1c1c;
+      display: flex;
+      align-items: center;
+      padding: 0 35px;
+      gap: 25px;
+    }
+
+    .now-playing {
+      width: 220px;
+    }
+
+    .now-playing-title {
+      font-size: 14px;
+    }
+
+    .now-playing-artist {
+      color: #666;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    button {
+      border: none;
+      background: none;
+      color: #fff;
+      cursor: pointer;
+      font-size: 18px;
+    }
+
+    button:hover {
+      color: #aaa;
+    }
+
+    .play {
+      width: 42px;
+      height: 42px;
+      border: 1px solid #444;
+      border-radius: 50%;
+    }
+
+    .progress {
+      flex: 1;
+      height: 2px;
+      background: #222;
+      position: relative;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: #fff;
+    }
+
+    .visualizer {
+      position: fixed;
+      bottom: 100px;
+      right: 35px;
+      display: flex;
+      align-items: end;
+      gap: 3px;
+      height: 35px;
+      opacity: 0.4;
+    }
+
+    .bar {
+      width: 3px;
+      height: 5px;
+      background: #fff;
+      animation: pulse 1s infinite alternate;
+    }
+
+    .bar:nth-child(2) { animation-delay: .1s; }
+    .bar:nth-child(3) { animation-delay: .2s; }
+    .bar:nth-child(4) { animation-delay: .3s; }
+    .bar:nth-child(5) { animation-delay: .4s; }
+    .bar:nth-child(6) { animation-delay: .5s; }
+    .bar:nth-child(7) { animation-delay: .6s; }
+
+    @keyframes pulse {
+      from {
+        height: 5px;
+      }
+      to {
+        height: 30px;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .sidebar {
+        display: none;
+      }
+
+      .content {
+        padding: 25px;
+      }
+
+      header {
+        padding: 0 20px;
+      }
+
+      .player {
+        padding: 0 20px;
+      }
+
+      .now-playing {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">music.shrisha.surf</div>
+  <a class="home" href="https://shrisha.surf">← home</a>
+</header>
+
+<div class="main">
+
+  <aside class="sidebar">
+    <h3>Library</h3>
+
+    <div class="playlist">All Music</div>
+    <div class="playlist">Recently Played</div>
+    <div class="playlist">Favorites</div>
+
+    <h3 style="margin-top: 40px;">Playlists</h3>
+
+    <div class="playlist">late night</div>
+    <div class="playlist">favorites</div>
+    <div class="playlist">random shit</div>
+  </aside>
+
+  <main class="content">
+
+    <div class="heading">
+      <h1>All Music</h1>
+      <p>your music, your server.</p>
+    </div>
+
+    <div class="tracks">
+
+      <div class="track">
+        <div class="track-number">01</div>
+
+        <div>
+          <div class="track-name">Your first song</div>
+          <div class="track-artist">Artist</div>
+        </div>
+
+        <div class="track-time">03:42</div>
+      </div>
+
+      <div class="track">
+        <div class="track-number">02</div>
+
+        <div>
+          <div class="track-name">Another song</div>
+          <div class="track-artist">Artist</div>
+        </div>
+
+        <div class="track-time">04:18</div>
+      </div>
+
+      <div class="track">
+        <div class="track-number">03</div>
+
+        <div>
+          <div class="track-name">Something else</div>
+          <div class="track-artist">Artist</div>
+        </div>
+
+        <div class="track-time">02:57</div>
+      </div>
+
+    </div>
+
+  </main>
+
+</div>
+
+<div class="visualizer">
+  <div class="bar"></div>
+  <div class="bar"></div>
+  <div class="bar"></div>
+  <div class="bar"></div>
+  <div class="bar"></div>
+  <div class="bar"></div>
+  <div class="bar"></div>
+</div>
+
+<div class="player">
+
+  <div class="now-playing">
+    <div class="now-playing-title">Nothing playing</div>
+    <div class="now-playing-artist">Select a track</div>
+  </div>
+
+  <div class="controls">
+    <button>↶</button>
+    <button class="play">▶</button>
+    <button>↷</button>
+  </div>
+
+  <div class="progress">
+    <div class="progress-fill"></div>
+  </div>
+
+</div>
+
+</body>
+</html>
